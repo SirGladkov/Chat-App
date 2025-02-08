@@ -1,56 +1,56 @@
 import { Request, Response } from "express"
 import prisma from "../db/prisma.js";
 
-export const sendMessage = async (req: Request, res:Response) => {
-    try {
-        const {message} = req.body;
-        const {id:receiverId} = req.params;
-        const senderId = req.user.id;
+export const sendMessage = async (req: Request, res: Response) => {
+	try {
+		const { message } = req.body;
+		const { id: receiverId } = req.params;
+		const senderId = req.user.id;
 
-        let conversation = await prisma.conversation.findFirst({
-            where: {
-                participantIds: {
-                    hasEvery: [senderId, receiverId],
-                }
-            }
-        })
+		let conversation = await prisma.conversation.findFirst({
+			where: {
+				participantIds: {
+					hasEvery: [senderId, receiverId],
+				},
+			},
+		});
         // Отправляется первое сообщение => создаем новый диалог
-        if (!conversation){
-            conversation = await prisma.conversation.create({
-                data: {
-                    participantIds: {
-                        set: [senderId, receiverId]
-                    }
-                }
-            })
-        }
+        if (!conversation) {
+			conversation = await prisma.conversation.create({
+				data: {
+					participantIds: {
+						set: [senderId, receiverId],
+					},
+				},
+			});
+		}
 
-        const newMewssage = await prisma.message.create({
-            data: {
-                senderId,
-                body: message,
-                conversationId: conversation.id
-            }
-        })
+		const newMessage = await prisma.message.create({
+			data: {
+				senderId,
+				body: message,
+				conversationId: conversation.id,
+			},
+		});
 
-        if (newMewssage) {
-            conversation = await prisma.conversation.update({
-                where: {
-                    id: conversation.id,
-                },
-                data: {
-                    messages: {
-                        connect: {
-                            id: newMewssage.id,
-                        }
-                    }
-                }
-            })
-        }
+		if (newMessage) {
+			conversation = await prisma.conversation.update({
+				where: {
+					id: conversation.id,
+				},
+				data: {
+					messages: {
+						connect: {
+							id: newMessage.id,
+						},
+					},
+				},
+			});
+		}
         // socet.io
 
 
-        res.status(201).json(newMewssage);
+        res.status(201).json(newMessage);
 
     } catch (error:any) {
         console.error("Error in sendMessage", error.message)
@@ -73,7 +73,7 @@ export const getMessages = async (req: Request, res: Response): Promise<void> =>
             include: {
                 messages: {
                     orderBy: {
-                        createAt: "asc"
+                        createdAt: "asc"
                     }
                 }
             }
