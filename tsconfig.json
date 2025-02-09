@@ -4,7 +4,7 @@
 		"module": "NodeNext", // Указывает, какой код модуля должен быть скомпилирован.
 		"moduleResolution": "NodeNext", // Указывае, как TypeScript должен разрешать импорт модулей.
 		"outDir": "./backend/dist", // Перенаправляет структуру вывода в каталог.
-		"rootDir": "./backend/src",
+		"rootDir": "./backend/",
 		"strict": true, // Включает все параметры строгой проверки типов.
 		"esModuleInterop": true, // Позволяет использовать импорт по умолчанию с моулями CommonJS.
 		"skipLibCheck": true // Эта опция пропускает проверку типов во всех файлах .d.ts.
