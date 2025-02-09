@@ -11,5 +11,5 @@ type MessageType = {
     body: string;
     senderId: string;
     createdAt: string;
-    // анимация 
+    shouldShake?: boolean;
 }
